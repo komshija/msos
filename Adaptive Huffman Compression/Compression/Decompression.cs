@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
+using System.Windows.Forms;
 
 namespace Compression
 {
-    class Decompression
+    public class Decompression : IHuffman
     {
-        public static void HuffmanDecompression()
+        public bool Execute(Stream stream, ProgressBar progressBar = null, string fileName = null, string path = null)
         {
-
+            return true;
         }
     }
 }
