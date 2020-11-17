@@ -1,12 +1,20 @@
 ﻿using Priority_Queue;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Text;
+using System.IO;
+using System.Linq;
+using BinaryBitLib;
+
 
 namespace Compression
 {
     class HuffmanCodesGenerator
     {
+        /// <summary>
+        /// Klasa koja predstavlja Node u stablu
+        /// </summary>
         class HuffmanNode
         {
             public int freq;
@@ -29,14 +37,32 @@ namespace Compression
                 freq = hn1.freq + hn2.freq;
             }
         }
-
-        Dictionary<char, List<bool>> dictionary;
+        #region Properties
+        Dictionary<char, List<byte>> dictionary;
+        HuffmanNode root;
+        #endregion
+        #region Constructors
+        /// <summary>
+        /// Konstruktor inicijalizuje celu tablicu od 256 karaktera
+        /// </summary>
+        public HuffmanCodesGenerator()
+        {
+            dictionary = new Dictionary<char, List<byte>>();
+            root = GetRoot();
+            Traversal(root, new List<byte>());
+        }
+        #endregion
+        #region Methods
+        /// <summary>
+        /// Metoda koja generise kodove na osnovu verovatnoca
+        /// </summary>
+        /// <returns>Vraca koren stabla koj</returns>
         private HuffmanNode GetRoot()
         {
             Dictionary<char, int> freq = new Dictionary<char, int>();
             SimplePriorityQueue<HuffmanNode, int> priorQueue = new SimplePriorityQueue<HuffmanNode, int>();
 
-            for(int i = 0; i < 255;i++)
+            for(int i = 0; i < 256;i++)
             {
                 freq.Add((char)i, i);
             }
@@ -56,52 +82,100 @@ namespace Compression
 
             return priorQueue.Dequeue();
         }
-        private void Traversal(HuffmanNode ptr, List<bool> code)
+        /// <summary>
+        /// Metoda obilazi celo stablo, gde mu se prosledjuje root node i generise kodove
+        /// na osnovu pojavljivanja.
+        /// </summary>
+        /// <param name="ptr">Proslediti root node</param>
+        /// <param name="code">Proslediti praznu listu byte-ova</param>
+        private void Traversal(HuffmanNode ptr, List<byte> code)
         {
             if (ptr.levi == null && ptr.desni == null)
             {
-                //BitConverter.GetBytes(0);
-                
-                //Moze da se gleda dubina stabla, da se zna kolko validnih bitova ima trenutno u byte
-                //Dodajes novi byte kad naidjes na popunjen byte
-                //Napisati fju za dodavanja bita u byte
-                
-                //Sta ako je kod manji od byte?
-                //Sta ako je kod veci od byte?
-                //Mozda da se koristi Pair<> len + code
-
-                //Kako pisati samo bit 
-
-                dictionary.Add(ptr.karakter.ToString().ToCharArray()[0], 
-                    code);
+                dictionary.Add(ptr.karakter.ToString().ToCharArray()[0], code);
             }
             else
             {
                 if (ptr.levi != null)
                 {
-                    List<bool> left = new List<bool>(code);
-                    left.Add(false);
+                    List<byte> left = new List<byte>(code);
+                    left.Add(0);
                     Traversal(ptr.levi, left);
                 }
                 if (ptr.desni != null)
                 {
-                    List<bool> right = new List<bool>(code);
-                    right.Add(true);
+                    List<byte> right = new List<byte>(code);
+                    right.Add(1);
                     Traversal(ptr.desni, right);
                 }
             }
         }
-        public List<int> GetCodes()
+        /// <summary>
+        /// Sortira po duzini kodova
+        /// </summary>
+        /// <returns>Funkcija vraca listu sa KeyValuePair strukturom gde je Key char a Value lista bajtova.</returns>
+        public List<KeyValuePair<char,List<byte>>> GetCodes()
         {
-
-
-            return null;
+            return dictionary.OrderBy(row => row.Value.Count).ToList();
         }
-
-       /*byte AddBitToByte(byte B,bool b)
+        /// <summary>
+        /// Stampa tablicu u formatu [Simbol Kod] u fajl text.txt 
+        /// </summary>
+        public void PrintCodesAsCharactersToFile()
         {
-           
-            return (B << 4) | Convert.ToByte(b);
-        }*/
+            using (FileStream fs = new FileStream("text.txt", FileMode.OpenOrCreate))
+            {
+                using (BinaryBitWriter bbw = new BinaryBitWriter(fs))
+                {
+                    foreach (var row in dictionary.OrderBy(row => row.Value.Count))
+                    {
+                        bbw.WriteChar(row.Key);
+                        bbw.WriteChar(' ');
+                        foreach (var bit in row.Value)
+                        {
+                            if (bit == 0)
+                            {
+                                bbw.WriteChar('0');
+                            }
+                            else
+                            {
+                                bbw.WriteChar('1');
+                            }
+                        }
+                        bbw.WriteChar('\n');
+                        bbw.Flush();
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Metoda cisti celu klasu
+        /// </summary>
+        public void CleanIt()
+        {
+            dictionary.Clear();
+            RemovePointers(this.root);
+        }
+        /// <summary>
+        /// Sklanja pokazivace sa svakog Huffman Noda
+        /// </summary>
+        /// <param name="node"></param>
+        private void RemovePointers(HuffmanNode node)
+        {
+            if (node == null)
+                return;
+            if(node.levi == null && node.desni == null)
+                return;
+            else
+            {
+                if(node.levi != null)
+                    RemovePointers(node.levi);
+                if(node.desni != null)
+                    RemovePointers(node.desni);
+                node.levi = null;
+                node.desni = null;
+            }
+        }
+        #endregion
     }
 }

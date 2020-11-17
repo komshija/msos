@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BinaryBitLib" Version="1.2.6" />
     <PackageReference Include="OptimizedPriorityQueue" Version="5.0.0" />
   </ItemGroup>
 
