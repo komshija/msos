@@ -27,7 +27,11 @@ namespace Adaptive_Huffman_Compression
                 var stream = dialog_open.OpenFile();
                 if (stream != null)
                 {
-                    new Compression.Compression().Execute(stream,progressBar);
+                    bool success = new Compression.Compression().Execute(stream,progressBar);
+                    if(success)
+                    {
+                        MessageBox.Show("Uspesno ste kompresovali fajl!","Success",MessageBoxButtons.OK);
+                    }
                 }
                 stream.Close();
             }

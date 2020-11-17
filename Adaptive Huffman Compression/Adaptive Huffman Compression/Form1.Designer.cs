@@ -148,6 +148,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(539, 468);
             this.Name = "form_Glavna";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Adaptivna Huffman Kompresija - A Varijanta";
             this.ms_meni.ResumeLayout(false);
             this.ms_meni.PerformLayout();

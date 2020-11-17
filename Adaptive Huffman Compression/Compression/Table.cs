@@ -66,8 +66,8 @@ namespace Compression
             for (index = 0; index < symbolFreqTable.Count; index++)
                 if (symbolFreqTable[index].Key.CompareTo(symbol) == 0)
                     break;
-
-            return codeList[index];
+            var response = codeList[index];
+            return response;
         }
         /// <summary>
         /// Inkrementira frekvenciju slova i sortira u opadajucem redosledu
