@@ -40,6 +40,7 @@ namespace Compression
         {
             byte[] outputBits = table.SearchBySymbol(symbol).ToArray();
             writer.WriteBits(outputBits);
+            writer.Flush();
             table.IncrementFreq(symbol);
         }
         #endregion
