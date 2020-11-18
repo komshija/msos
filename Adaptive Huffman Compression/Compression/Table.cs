@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Compression
 {
@@ -47,15 +48,26 @@ namespace Compression
         {
             symbolFreqTable.Sort((x, y) => y.Value.CompareTo(x.Value));
         }
+
+
+        public bool CodeExists(List<byte> code)
+        {
+            var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
+            if (row == null)
+                return false;
+            return true;
+        }
+
         /// <summary>
         /// Trazenje simbola na osnovu koda
         /// </summary>
-        //public char SearchByCode(List<byte> code)
-        //{
-        //    //Ovo za sad ovako stoji, treba da se napravi slucaj ako ne nadje index sta radi sledece
-        //    int index = codeList.IndexOf(code);
-        //    return symbolFreqTable[index].Key;
-        //}
+        public char SearchByCode(List<byte> code)
+        {
+            //Ovo za sad ovako stoji, treba da se napravi slucaj ako ne nadje index sta radi sledece
+            var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
+            int index = codeList.IndexOf(row);
+            return symbolFreqTable[index].Key;
+        }
         /// <summary>
         /// Trazenje simbola na osnovu simbola
         /// </summary>

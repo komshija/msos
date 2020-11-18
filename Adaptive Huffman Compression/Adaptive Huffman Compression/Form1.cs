@@ -45,10 +45,13 @@ namespace Adaptive_Huffman_Compression
                 var stream = dialog_open.OpenFile();
                 if (stream != null)
                 {
-                    new Compression.Decompression().Execute(stream,progressBar);
+                    bool success = new Compression.Decompression().Execute(stream,progressBar);
+                    if(success)
+                        MessageBox.Show("Uspesno ste dekompresovali fajl!", "Success", MessageBoxButtons.OK);
                 }
                 stream.Close();
             }
+
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
