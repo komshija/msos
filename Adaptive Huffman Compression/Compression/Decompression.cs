@@ -16,11 +16,11 @@ namespace Compression
             string fileNamee = @"./decompressed.txt";
             using(BinaryBitReader bitReader = new BinaryBitReader(stream))
             {
-                using(StreamWriter sw = new StreamWriter(new FileStream(fileNamee, FileMode.Truncate)))
+                using(StreamWriter sw = new StreamWriter(new FileStream(fileNamee, FileMode.Create)))
                 {
                     List<byte> readedBits = new List<byte>();
                     byte bit;
-                    while(bitReader.BytesRead != stream.Length)
+                    while(bitReader.BytesRead != stream.Length+1)
                     {
                         bit = bitReader.ReadBit();
                         readedBits.Add(bit);
