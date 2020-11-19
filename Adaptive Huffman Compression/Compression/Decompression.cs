@@ -10,16 +10,17 @@ namespace Compression
     public class Decompression : IHuffman
     {
         private Table table;
-        public bool Execute(Stream stream, ProgressBar progressBar = null, string fileName = null, string path = null)
+        public bool Execute(Stream stream, ProgressBar progressBar = null, Stream outStream = null)
         {
             table = new Table();
-            string fileNamee = @"./decompressed.txt";
+           // string fileNamee = @"./decompressed.txt";
             using (BinaryBitReader bitReader = new BinaryBitReader(stream))
             {
-                using (StreamWriter sw = new StreamWriter(new FileStream(fileNamee, FileMode.Create)))
+                using (StreamWriter sw = new StreamWriter(outStream))
                 {
                     List<byte> readedBits = new List<byte>();
                     byte bit;
+                    int progressRead = 0;
                     while (bitReader.BytesRead != stream.Length)
                     {
                         bit = bitReader.ReadBit();
@@ -30,9 +31,10 @@ namespace Compression
                             sw.Write(outputChar);
                             table.IncrementFreq(outputChar);
                             readedBits.Clear();
+                            progressRead++;
                         }
                         if (progressBar != null)
-                            progressBar.Value = Convert.ToInt32(bitReader.BytesRead / stream.Length) * 100;
+                            progressBar.Value = Convert.ToInt32(progressRead / stream.Length) * 100;
                     
                     }
 

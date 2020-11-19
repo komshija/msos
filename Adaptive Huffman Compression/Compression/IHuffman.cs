@@ -8,6 +8,6 @@ namespace Compression
 {
     interface IHuffman
     {
-        bool Execute(Stream stream, ProgressBar progressBar = null, string fileName = null, string path = null);
+        bool Execute(Stream stream, ProgressBar progressBar = null, Stream outStream = null);
     }
 }

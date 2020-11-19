@@ -17,25 +17,25 @@ namespace Compression
         int counter;
         #endregion
 
-        public bool Execute(Stream stream, ProgressBar progressBar = null, string fileName = null, string path = null)
+        public bool Execute(Stream stream, ProgressBar progressBar = null, Stream outStream = null)
         {
             table = new Table();
 
-            string fileNamee = @"./test.bin";
+           // string fileNamee = @"./test.bin";
             using (StreamReader reader = new StreamReader(stream))
             {
-                using (BinaryBitWriter binWriter = new BinaryBitWriter(new FileStream(fileNamee, FileMode.Create)))
+                using (BinaryBitWriter binWriter = new BinaryBitWriter(outStream))
                 {
                     char symbol;
                     counter = 0;
-                    int readed = 0;
+                    int progressRead = 0;
                     while (!reader.EndOfStream)
                     {
                         symbol = (char)reader.Read();
                         WriteCode(symbol, binWriter);
-
+                        progressRead++;
                         if (progressBar != null)
-                            progressBar.Value = Convert.ToInt32(Convert.ToDouble(readed) / Convert.ToDouble(stream.Length) * 100);
+                            progressBar.Value = Convert.ToInt32(Convert.ToDouble(progressRead) / Convert.ToDouble(stream.Length) * 100);
                     }
                     if (counter != 0)
                     {
