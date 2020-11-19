@@ -14,6 +14,7 @@ namespace Compression
 
         #region Properties
         Table table;
+        int counter;
         #endregion
 
         public bool Execute(Stream stream, ProgressBar progressBar = null, string fileName = null, string path = null)
@@ -23,10 +24,10 @@ namespace Compression
             string fileNamee = @"./test.bin";
             using (StreamReader reader = new StreamReader(stream))
             {
-                using (BinaryBitWriter binWriter = new BinaryBitWriter(new FileStream(fileNamee, FileMode.Truncate)))
+                using (BinaryBitWriter binWriter = new BinaryBitWriter(new FileStream(fileNamee, FileMode.Create)))
                 {
-
                     char symbol;
+                    counter = 0;
                     int readed = 0;
                     while (!reader.EndOfStream)
                     {
@@ -35,6 +36,13 @@ namespace Compression
                         readed++;
                         if (progressBar != null)
                             progressBar.Value = Convert.ToInt32(Convert.ToDouble(readed) / Convert.ToDouble(stream.Length) * 100);
+                    }
+                    if(counter!=0)
+                    {
+                        List<byte> dopuna = new List<byte>();
+                        for (int i = 0; i < 8 - counter; i++)
+                            dopuna.Add(1);
+                        binWriter.WriteBits(dopuna.ToArray());
                     }
                 }
             }
@@ -47,6 +55,7 @@ namespace Compression
         private void WriteCode(char symbol, BinaryBitWriter writer)
         {
             byte[] outputBits = table.SearchBySymbol(symbol).ToArray();
+            counter = (counter+outputBits.Length)%8;
             writer.WriteBits(outputBits);
             table.IncrementFreq(symbol);
         }
