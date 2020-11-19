@@ -19,6 +19,7 @@ namespace Compression
         public bool Execute(Stream stream, ProgressBar progressBar = null, string fileName = null, string path = null)
         {
             table = new Table();
+            
             string fileNamee = @"./test.bin";
             using (StreamReader reader = new StreamReader(stream))
             {

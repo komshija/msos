@@ -123,7 +123,7 @@ namespace Compression
         /// </summary>
         public void PrintCodesAsCharactersToFile()
         {
-            using (FileStream fs = new FileStream("text.txt", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream("codes.txt", FileMode.OpenOrCreate))
             {
                 using (BinaryBitWriter bbw = new BinaryBitWriter(fs))
                 {
