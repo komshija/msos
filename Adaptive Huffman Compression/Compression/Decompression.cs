@@ -14,13 +14,13 @@ namespace Compression
         {
             table = new Table();
             string fileNamee = @"./decompressed.txt";
-            using(BinaryBitReader bitReader = new BinaryBitReader(stream))
+            using (BinaryBitReader bitReader = new BinaryBitReader(stream))
             {
-                using(StreamWriter sw = new StreamWriter(new FileStream(fileNamee, FileMode.Create)))
+                using (StreamWriter sw = new StreamWriter(new FileStream(fileNamee, FileMode.Create)))
                 {
                     List<byte> readedBits = new List<byte>();
                     byte bit;
-                    while(bitReader.BytesRead != stream.Length+1)
+                    while (bitReader.BytesRead != stream.Length)
                     {
                         bit = bitReader.ReadBit();
                         readedBits.Add(bit);
@@ -33,11 +33,14 @@ namespace Compression
                         }
                         if (progressBar != null)
                             progressBar.Value = Convert.ToInt32(bitReader.BytesRead / stream.Length) * 100;
+                    
                     }
-                    progressBar.Value = 100;
+
+                    if(progressBar != null)
+                        progressBar.Value = 100;
                 }
             }
-            
+
 
 
             return true;

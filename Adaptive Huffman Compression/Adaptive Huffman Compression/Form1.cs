@@ -30,7 +30,7 @@ namespace Adaptive_Huffman_Compression
                     bool success = new Compression.Compression().Execute(stream,progressBar);
                     if(success)
                     {
-                        MessageBox.Show("Uspesno ste kompresovali fajl!","Success",MessageBoxButtons.OK);
+                        MessageBox.Show("Uspesno ste kompresovali fajl!","Success",MessageBoxButtons.OK, icon: MessageBoxIcon.Information);
                     }
                 }
                 stream.Close();
@@ -47,7 +47,7 @@ namespace Adaptive_Huffman_Compression
                 {
                     bool success = new Compression.Decompression().Execute(stream,progressBar);
                     if(success)
-                        MessageBox.Show("Uspesno ste dekompresovali fajl!", "Success", MessageBoxButtons.OK);
+                        MessageBox.Show("Uspesno ste dekompresovali fajl!", "Success", MessageBoxButtons.OK, icon: MessageBoxIcon.Information);
                 }
                 stream.Close();
             }
@@ -63,7 +63,7 @@ namespace Adaptive_Huffman_Compression
                 "Asistent: Nenad Petrović\n\n" +
                 "Autori projekta:\n" +
                 "Stefan Sokolović\n" +
-                "Milan Radosavljević\n", caption: "O projektu");
+                "Milan Radosavljević\n", caption: "O projektu", buttons: MessageBoxButtons.OK,icon:MessageBoxIcon.Information);
         }
     }
 }
