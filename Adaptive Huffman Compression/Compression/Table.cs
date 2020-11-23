@@ -98,12 +98,14 @@ namespace Compression
 
             Sort();
         }
-
+        /// <summary>
+        /// Deli sva pojavljivanja brojeva sa dva
+        /// </summary>
         public void DivideAll()
         {
             for (int i = 0; i < symbolFreqTable.Count; i++)
             {
-                char key = symbolFreqTable[i].key;
+                char key = symbolFreqTable[i].Key;
                 int value = symbolFreqTable[i].Value;
                 value /= 2;
                 symbolFreqTable[i] = new KeyValuePair<char, int>(key, value);
