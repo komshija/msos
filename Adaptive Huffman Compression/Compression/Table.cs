@@ -98,6 +98,17 @@ namespace Compression
 
             Sort();
         }
+
+        public void DivideAll()
+        {
+            for (int i = 0; i < symbolFreqTable.Count; i++)
+            {
+                char key = symbolFreqTable[i].key;
+                int value = symbolFreqTable[i].Value;
+                value /= 2;
+                symbolFreqTable[i] = new KeyValuePair<char, int>(key, value);
+            }
+        }
         #endregion
     }
 }
