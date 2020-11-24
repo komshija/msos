@@ -10,11 +10,13 @@ namespace Compression
         #region Properties
         List<KeyValuePair<char, int>> symbolFreqTable;
         List<List<byte>> codeList;
+        Dictionary<int, int> codeLengthIndexes;
         #endregion
         #region Constructors
         public Table()
         {
             InitializeTable();
+            InitializeCodeLengthIndexes();
         }
         #endregion
         #region Methods
@@ -42,7 +44,7 @@ namespace Compression
             }
         }
         /// <summary>
-        /// Sortira elemente tabele po frekvenciji u opadajucem redosledu
+        /// Menja mesta elementa sa zadatim indeksom i prvim elementom koji ima manju frekvenciju od njega
         /// </summary>
         public void Swap(int index)
         {
@@ -55,22 +57,44 @@ namespace Compression
         }
 
 
-        public bool CodeExists(List<byte> code)
-        {
-            var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
-            if (row == null)
-                return false;
-            return true;
-        }
+        //public bool CodeExists(List<byte> code)
+        //{
+        //    var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
+        //    if (row == null)
+        //        return false;
+        //    return true;
+        //}
 
         /// <summary>
-        /// Trazenje simbola na osnovu koda
+        /// Trazenje indeksa simbola na osnovu koda ukoliko postoji
         /// </summary>
-        public char SearchByCode(List<byte> code)
+        public int SearchByCode(List<byte> code,int length)
         {
+            int indexStart = codeLengthIndexes[length];
+            int indexEnd;
+            if (codeLengthIndexes.ContainsKey(length + 1))
+                indexEnd = codeLengthIndexes[length + 1];
+            else
+                indexEnd = symbolFreqTable.Count;
+            List<byte> row = null ;
+
+            for (int i = indexStart; i < indexEnd; i++)
+                if(codeList[i].SequenceEqual(code))
+                {
+                    row = codeList[i];
+                    break;
+                }
             //Ovo za sad ovako stoji, treba da se napravi slucaj ako ne nadje index sta radi sledece
-            var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
-            int index = codeList.IndexOf(row);
+            //var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
+            if (row == null)
+                return -1;
+            return  codeList.IndexOf(row);
+        }
+        /// <summary>
+        /// Vraca se simbol po indeksu
+        /// </summary>
+        public char SearchSymbolByIndex(int index)
+        {
             return symbolFreqTable[index].Key;
         }
         /// <summary>
@@ -124,6 +148,35 @@ namespace Compression
                 int value = symbolFreqTable[i].Value;
                 value /= 2;
                 symbolFreqTable[i] = new KeyValuePair<char, int>(key, value);
+            }
+        }
+        /// <summary>
+        /// Vraca duzinu prvog koda u tabeli
+        /// </summary>
+        public int GetFirstCodelength()
+        {
+            return codeList[0].Count;
+        }
+
+        private int GetCodeIndexByLength(int length)
+        {
+            return codeList.FindIndex(x => x.Count == length);
+        }
+        /// <summary>
+        /// Inicijalizuje tabelu sa indeksima prvih kodova za svaku duzinu kdoa
+        /// </summary>
+        private void InitializeCodeLengthIndexes()
+        {
+            codeLengthIndexes = new Dictionary<int, int>();
+            int length = GetFirstCodelength();
+            int index = 0;
+            codeLengthIndexes.Add(length, index);
+            while(true)
+            {
+                index = GetCodeIndexByLength(++length);
+                if (index < 0)
+                    break;
+                codeLengthIndexes.Add(length, index);
             }
         }
         #endregion
