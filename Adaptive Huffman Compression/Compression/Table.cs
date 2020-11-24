@@ -44,9 +44,14 @@ namespace Compression
         /// <summary>
         /// Sortira elemente tabele po frekvenciji u opadajucem redosledu
         /// </summary>
-        public void Sort()
+        public void Swap(int index)
         {
-            symbolFreqTable.Sort((x, y) => y.Value.CompareTo(x.Value));
+            //symbolFreqTable.Sort((x, y) => y.Value.CompareTo(x.Value));
+
+            int ind = symbolFreqTable.FindIndex(x => (symbolFreqTable[index].Value > x.Value || symbolFreqTable[index].Key == x.Key));
+            KeyValuePair<char,int> temp = symbolFreqTable[index];
+            symbolFreqTable[index] = symbolFreqTable[ind];
+            symbolFreqTable[ind] = temp;
         }
 
 
@@ -74,10 +79,12 @@ namespace Compression
         public List<byte> SearchBySymbol(char symbol)
         {
             //Za sad ce ovo da radi, pa ce menjamo ako ima bolje resenje
-            int index; 
-            for (index = 0; index < symbolFreqTable.Count; index++)
-                if (symbolFreqTable[index].Key.CompareTo(symbol) == 0)
-                    break;
+            
+            //int index; 
+            //for (index = 0; index < symbolFreqTable.Count; index++)
+            //    if (symbolFreqTable[index].Key.CompareTo(symbol) == 0)
+            //        break;
+            int index = symbolFreqTable.FindIndex(x => x.Key == symbol);
             var response = codeList[index];
             return response;
         }
@@ -86,17 +93,25 @@ namespace Compression
         /// </summary>
         public void IncrementFreq(char symbol)
         {
-            for (int i = 0; i < symbolFreqTable.Count; i++)
-            {
-                if(symbolFreqTable[i].Key == symbol)
-                {
-                    int value = symbolFreqTable[i].Value + 1;
-                    symbolFreqTable[i] = new KeyValuePair<char, int>(symbol, value);
-                    break;
-                }
-            }
+            //int i;
+            //for (i = 0; i < symbolFreqTable.Count; i++)
+            //{
+            //    if (symbolFreqTable[i].Key == symbol)
+            //    {
+            //        int value = symbolFreqTable[i].Value + 1;
+            //        symbolFreqTable[i] = new KeyValuePair<char, int>(symbol, value);
+            //        break;
+            //    }
+            //}
 
-            Sort();
+            int index = symbolFreqTable.FindIndex(x => x.Key == symbol);
+            int value = symbolFreqTable[index].Value + 1;
+            symbolFreqTable[index] = new KeyValuePair<char, int>(symbol, value);
+
+            if (symbolFreqTable[index].Value == int.MaxValue)
+                DivideAll();
+
+            Swap(index);
         }
         /// <summary>
         /// Deli sva pojavljivanja brojeva sa dva

@@ -37,16 +37,17 @@ namespace Compression
                         if (progressBar != null)
                             progressBar.Value = Convert.ToInt32(Convert.ToDouble(progressRead) / Convert.ToDouble(stream.Length) * 100);
 
-                        if(progressRead == int.MaxValue)
-                            table.DivideAll();
+                        //if(progressRead == int.MaxValue)
+                        //    table.DivideAll();
                         
                     }
                     if (counter != 0)
                     {
-                        List<byte> dopuna = new List<byte>();
+                        //List<byte> dopuna = new List<byte>();
                         for (int i = 0; i < 8 - counter; i++)
-                            dopuna.Add(1);
-                        binWriter.WriteBits(dopuna.ToArray());
+                            binWriter.WriteBit(1);
+                            //dopuna.Add(1);
+                            //binWriter.WriteBits(dopuna.ToArray());
                     }
                     binWriter.WriteChar('\0');
                     
