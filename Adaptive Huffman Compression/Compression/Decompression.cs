@@ -31,7 +31,7 @@ namespace Compression
                             int outputIndex = table.SearchByCode(readedBits,readedBits.Count);
                             if (outputIndex == -1)
                                 continue;
-                            char outputChar = table.SearchSymbolByIndex(outputIndex);
+                            char outputChar = table.GetSymbolByIndex(outputIndex);
                             sw.Write(outputChar);
                             table.IncrementFreq(outputChar);
                             readedBits.Clear();

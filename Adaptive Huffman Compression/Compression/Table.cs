@@ -93,7 +93,7 @@ namespace Compression
         /// <summary>
         /// Vraca se simbol po indeksu
         /// </summary>
-        public char SearchSymbolByIndex(int index)
+        public char GetSymbolByIndex(int index)
         {
             return symbolFreqTable[index].Key;
         }
