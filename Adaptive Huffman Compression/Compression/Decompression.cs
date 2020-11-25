@@ -28,10 +28,10 @@ namespace Compression
                         readedBits.Add(bit);
                         if (readedBits.Count >= minimumLength)
                         {
-                            int outputIndex = table.SearchByCode(readedBits,readedBits.Count);
-                            if (outputIndex == -1)
+                            String result = table.SearchByCode(readedBits);
+                            if (result == null)
                                 continue;
-                            char outputChar = table.GetSymbolByIndex(outputIndex);
+                            char outputChar = char.Parse(result);
                             sw.Write(outputChar);
                             table.IncrementFreq(outputChar);
                             readedBits.Clear();
