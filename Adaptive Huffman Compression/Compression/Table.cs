@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Compression
 {
+        #region Classes
     public class Table
     {
         class KeyValues
@@ -18,6 +19,25 @@ namespace Compression
                 Count = count;
             }
         }
+        public class ListArrayComparer : IEqualityComparer<List<byte>>
+        {
+            public bool Equals(List<byte> x, List<byte> y)
+            {
+                if (x.SequenceEqual(y))
+                    return true;
+                return false;
+
+            }
+
+            public int GetHashCode(List<byte> obj)
+            {
+                    var result = 0;
+                    foreach (byte b in obj)
+                        result = (result * 31) ^ b;
+                    return result;
+            }
+        }
+        #endregion
         #region Properties
         Dictionary<char, KeyValues> symbols;
         Dictionary<List<byte>, char> codes;
@@ -26,7 +46,6 @@ namespace Compression
         public Table()
         {
             InitializeTable();
-            //InitializeCodeLengthIndexes();
         }
         #endregion
         #region Methods
@@ -46,7 +65,7 @@ namespace Compression
             HuffmanCodesGenerator generator = new HuffmanCodesGenerator();
             List<KeyValuePair<char, List<byte>>> symbolCodeTable = generator.GetCodes();
             symbols = new Dictionary<char, KeyValues>();
-            codes = new Dictionary<List<byte>, char>();
+            codes = new Dictionary<List<byte>, char>(new ListArrayComparer());
 
             foreach (var item in symbolCodeTable)
             {
@@ -54,13 +73,15 @@ namespace Compression
             }
         }
         /// <summary>
-        /// Menja mesta elementa sa zadatim indeksom i prvim elementom koji ima manju frekvenciju od njega
+        /// Menja mesta odgovarajucih elemenata
         /// </summary>
         public void Swap(char symbol1)
         {
             for(int i=0;i<codes.Count;i++)
             {
                 char symbol2 = codes.ElementAt(i).Value;
+                if (symbol1 == symbol2)
+                    break;
                 if (symbols[symbol1].Count > symbols[symbol2].Count)
                 {
                     SwapTwoElements(symbol1, symbol2);
@@ -69,7 +90,9 @@ namespace Compression
 
             }
         }
-
+        /// <summary>
+        /// Menja mesta dva prosledjena simbola
+        /// </summary>
         private void SwapTwoElements(char sym1,char sym2)
         {
             List<byte> tmpCode = symbols[sym1].Code;
@@ -82,29 +105,10 @@ namespace Compression
         }
 
         /// <summary>
-        /// Trazenje indeksa simbola na osnovu koda ukoliko postoji
+        /// Trazenje simbola na osnovu koda ukoliko postoji
         /// </summary>
         public String SearchByCode(List<byte> code)
         {
-            //int indexStart = codeLengthIndexes[length];
-            //int indexEnd;
-            //if (codeLengthIndexes.ContainsKey(length + 1))
-            //    indexEnd = codeLengthIndexes[length + 1];
-            //else
-            //    indexEnd = symbolFreqTable.Count;
-            //List<byte> row = null ;
-
-            //for (int i = indexStart; i < indexEnd; i++)
-            //    if(codeList[i].SequenceEqual(code))
-            //    {
-            //        row = codeList[i];
-            //        break;
-            //    }
-            ////Ovo za sad ovako stoji, treba da se napravi slucaj ako ne nadje index sta radi sledece
-            ////var row = codeList.Where(codeFromList => codeFromList.SequenceEqual(code)).FirstOrDefault();
-            //if (row == null)
-            //    return -1;
-            //return  codeList.IndexOf(row);
             String result = null;
             if (codes.ContainsKey(code))
                 result = Char.ToString(codes[code]);
@@ -112,21 +116,14 @@ namespace Compression
 
         }
         /// <summary>
-        /// Vraca se simbol po indeksu
-        /// </summary>
-        //public char GetSymbolByIndex(int index)
-        //{
-        //    return symbolFreqTable[index].Key;
-        //}
-        /// <summary>
-        /// Trazenje simbola na osnovu simbola
+        /// Trazenje simbola na osnovu koda
         /// </summary>
         public List<byte> SearchBySymbol(char symbol)
         {
             return symbols[symbol].Code;
         }
         /// <summary>
-        /// Inkrementira frekvenciju slova i sortira u opadajucem redosledu
+        /// Inkrementira frekvenciju slova i radi swap
         /// </summary>
         public void IncrementFreq(char symbol)
         {
@@ -153,28 +150,6 @@ namespace Compression
         {
             return codes.ElementAt(0).Key.Count;
         }
-
-        //private int GetCodeIndexByLength(int length)
-        //{
-        //    return codeList.FindIndex(x => x.Count == length);
-        //}
-        /// <summary>
-        /// Inicijalizuje tabelu sa indeksima prvih kodova za svaku duzinu kdoa
-        /// </summary>
-        //private void InitializeCodeLengthIndexes()
-        //{
-        //    codeLengthIndexes = new Dictionary<int, int>();
-        //    int length = GetFirstCodelength();
-        //    int index = 0;
-        //    codeLengthIndexes.Add(length, index);
-        //    while(true)
-        //    {
-        //        index = GetCodeIndexByLength(++length);
-        //        if (index < 0)
-        //            break;
-        //        codeLengthIndexes.Add(length, index);
-        //    }
-        //}
         #endregion
     }
 }

@@ -13,7 +13,6 @@ namespace Compression
         public bool Execute(Stream stream, ProgressBar progressBar = null, Stream outStream = null)
         {
             table = new Table();
-           // string fileNamee = @"./decompressed.txt";
             using (BinaryBitReader bitReader = new BinaryBitReader(stream))
             {
                 using (StreamWriter sw = new StreamWriter(outStream))
@@ -41,8 +40,6 @@ namespace Compression
                         if (progressBar != null)
                             progressBar.Value = Convert.ToInt32(progressRead / stream.Length) * 100;
 
-                        //if (progressRead == int.MaxValue)
-                        //    table.DivideAll();
                     }
 
                     if(progressBar != null)
