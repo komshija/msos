@@ -20,26 +20,22 @@ namespace Compression
         public bool Execute(Stream stream, ProgressBar progressBar = null, Stream outStream = null)
         {
             table = new Table();
-
-           // string fileNamee = @"./test.bin";
             using (StreamReader reader = new StreamReader(stream))
             {
+                string content = reader.ReadToEnd();
                 using (BinaryBitWriter binWriter = new BinaryBitWriter(outStream))
                 {
-                    char symbol;
                     counter = 0;
                     int progressRead = 0;
-                    while (!reader.EndOfStream)
+                    foreach (var Char in content)
                     {
-                        symbol = (char)reader.Read();
-                        WriteCode(symbol, binWriter);
+                        WriteCode(Char, binWriter);
                         progressRead++;
                         if (progressBar != null)
                             progressBar.Value = Convert.ToInt32(Convert.ToDouble(progressRead) / Convert.ToDouble(stream.Length) * 100);
                     }
                     if (counter != 0)
                     {
-                        //List<byte> dopuna = new List<byte>();
                         for (int i = 0; i < 8 - counter; i++)
                             binWriter.WriteBit(1);
                     }
