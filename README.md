@@ -2,9 +2,5 @@
 
 
 ### Rad od strane
-Radosavljević Milan @agoskomsija
+Radosavljević Milan @komshija
 Sokolović Stefan @Sokolovic999
-
-### Progress
-- [x] Napravi git repo
-- [ ] Uradi sve ostalo
